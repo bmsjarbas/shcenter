@@ -1,0 +1,30 @@
+version: '2.1'
+
+services:
+  shcenter-mysql:
+    image: mysql:latest
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=shcenter
+      - MYSQL_PASSWORD=root
+    healthcheck:
+      test: "/etc/init.d/mysql status"
+      interval: 1s
+      retries: 120
+
+  spring-boot-app:
+    build:
+      context: .
+      dockerfile: Dockerfile-java
+    depends_on:
+      shcenter-mysql:
+        condition: service_healthy
+
+    ports:
+      - 8080:8080
+    environment:
+      - DATABASE_HOST=shcenter-mysql
+      - DATABASE_USER=root
+      - DATABASE_PASSWORD=root
+      - DATABASE_NAME=shcenter
+      - DATABASE_PORT=3306

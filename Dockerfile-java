@@ -1,0 +1,3 @@
+FROM java:8
+ADD target/shcenter.jar app.jar
+RUN bash -c 'touch /app.jar'
